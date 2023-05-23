@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>H.A.W.K</title>
+
+    <link href="DataTables/datatables.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="DataTables/datatables.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <style>
+      .button-space {
+        margin-right: 10px; 
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="fw-body">
+      <div class="content">
+        <h1 class="page_title">H.A.W.K</h1>
+        <div class="demo-html">
+          <div class="mb-3">
+            <button id="buttonBranch" class="btn btn-primary button-space">BRANCH</button>
+            <button id="buttonCust" class="btn btn-primary button-space">CUSTOMER</button>
+            <button id="buttonProd" class="btn btn-primary button-space">PRODUCT</button>
+            <button id="buttonBranCust" class="btn btn-primary button-space">BRANCH-CUSTOMER</button>
+            <button id="buttonBranProd" class="btn btn-primary button-space">BRANCH-PRODUCT</button>
+            <button id="buttonCustProd" class="btn btn-primary button-space">CUSTOMER-PRODUCT</button>
+            <button id="buttonBranCustProd" class="btn btn-primary button-space">BRANCH-CUSTOMER-PRODUCT</button>
+          </div>
+          <div id="tableContainer">
+            <!-- The table will be dynamically populated here -->
+          </div>
+          <div id="example_wrapper" class="dataTables_wrapper no-footer"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        $("#example2").DataTable({
+          columnDefs: [
+            {
+              targets: [0],
+              orderData: [0, 1],
+            },
+            {
+              targets: [1],
+              orderData: [1, 0],
+            },
+            {
+              targets: [4],
+              orderData: [4, 0],
+            },
+          ],
+        });
+        // Function to load data and populate the table
+        function loadData(query) {
+          $.ajax({
+            url: "data.php",
+            method: "POST",
+            data: { query: query },
+            success: function (response) {
+              $("#tableContainer").html(response);
+              $("#example2").DataTable({
+                searching: true,
+                ordering: true,
+              });
+            },
+          });
+        }
+
+        $("#buttonBranch").click(function () {
+          var query = "SELECT * FROM `V_TotalPemasukanTiapBranch`";
+          loadData(query);
+        });
+
+        $("#buttonCust").click(function () {
+          var query = "SELECT * FROM `V_TotalPemasukanTiapCustomer`";
+          loadData(query);
+        });
+
+        $("#buttonProd").click(function () {
+          var query = "SELECT * FROM `V_TotalPemasukanPerProduk`";
+          loadData(query);
+        });
+
+        $("#buttonBranCust").click(function () {
+          var query = "SELECT * FROM `view2_sumCustBranch`";
+          loadData(query);
+        });
+
+        $("#buttonBranProd").click(function () {
+          var query = "SELECT * FROM `view3_sumProdBranch`";
+          loadData(query);
+        });
+
+        $("#buttonCustProd").click(function () {
+          var query = "SELECT * FROM `V_TotalPemasukanPerCustomerProd`";
+          loadData(query);
+        });
+
+        $("#buttonBranCustProd").click(function () {
+          var query = "SELECT * FROM `V_TotalPemasukanPerbranch_cust_prod`";
+          loadData(query);
+        });
+
+        // Load initial data (Button A)
+        $("#buttonBranch").trigger("click");
+      });
+    </script>
+  </body>
+</html>
