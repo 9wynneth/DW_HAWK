@@ -7,6 +7,11 @@ $query = $_POST['query'];
 // Execute the query
 $result = $conn->query($query);
 
+if (!$result) {
+  // Error occurred, handle it appropriately (e.g., log, display error message)
+  die("Error executing the query: " . $conn->error);
+}
+
 // Fetch the column names
 $columns = array();
 if ($result->num_rows > 0) {

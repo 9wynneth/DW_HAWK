@@ -13,10 +13,51 @@
     <script src="DataTables/datatables.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
     <style>
+      .btn-primary {
+        background-image: linear-gradient(to right, #5969ff, #717fe0);
+        border-color: #5969ff;
+        color: #ffffff;
+        transition: transform 0.3s;
+        padding: 10px 20px;
+        
+      }
+
+      .btn-primary:hover {
+        transform: scale(1.03);
+        color: white;
+      }
+
+      /* Highlight active button */
+      .btn-primary.active {
+        background-image: linear-gradient(to right, #5969ff, #717fe0);
+        border-color: #5969ff;
+        color: black;
+      }
+
+      /* Add special styles to the currently active button */
+      .btn-primary.active:hover {
+        transform: scale(1.03);
+        color:black;
+      }
+
+      /* Add special styles to the currently active button */
+      .btn-primary.active:focus {
+        transform: scale(1.03);
+        color: black !important;
+      }
+
+      .dataTables_wrapper .dataTables_paginate .paginate_button:hover,
+      .dataTables_wrapper .dataTables_paginate .paginate_button:active {
+        background-image: linear-gradient(to right, #5969ff, #717fe0) !important;
+        color: white !important;
+      }
+
       .button-space {
-        margin-left: 9px;
+        margin-left: 10px;
         margin-right: 10px; 
         margin-bottom: 20px;
       }
@@ -102,6 +143,7 @@ background-color: linear-gradient(to right, #5969ff, #717fe0);
           <div id="tableContainer">
             <!-- The table will be dynamically populated here -->
           </div>
+          <div id="chartContainer" style="width: 100%; height: 400px;"></div>
           <div id="example_wrapper" class="dataTables_wrapper no-footer"></div>
         </div>
       </div>
@@ -127,6 +169,8 @@ background-color: linear-gradient(to right, #5969ff, #717fe0);
         });
         // Function to load data and populate the table
         function loadData(query) {
+           // Remove the active class from all buttons
+    $(".btn-primary").removeClass("active");
           $.ajax({
             url: "data.php",
             method: "POST",
@@ -137,48 +181,95 @@ background-color: linear-gradient(to right, #5969ff, #717fe0);
                 searching: true,
                 ordering: true,
               });
+              createChart();
             },
           });
         }
+            // Function to create the chart
+    function createChart() {
+      // Retrieve the data from the table
+      var labels = [];
+      var values = [];
+      $("#example2 tbody tr").each(function () {
+        var label = $(this).find("td:eq(0)").text();
+        var value = parseFloat($(this).find("td:eq(1)").text());
+        labels.push(label);
+        values.push(value);
+      });
 
+      // Create the chart using Chart.js
+      var ctx = document.getElementById("chartContainer").getContext("2d");
+      var chart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Total Order",
+              data: values,
+              backgroundColor: "purple",
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    }
         $("#buttonBranch").click(function () {
           var query = "SELECT * FROM `V_TotalPemasukanTiapBranch`";
           loadData(query);
+          $(this).addClass("active");
         });
 
         $("#buttonCust").click(function () {
           var query = "SELECT * FROM `V_TotalPemasukanTiapCustomer`";
           loadData(query);
+          $(this).addClass("active");
         });
 
         $("#buttonProd").click(function () {
           var query = "SELECT * FROM `V_TotalPemasukanPerProduk`";
           loadData(query);
+          $(this).addClass("active");
         });
 
         $("#buttonBranCust").click(function () {
           var query = "SELECT * FROM `view2_sumCustBranch`";
           loadData(query);
+          $(this).addClass("active");
         });
 
         $("#buttonBranProd").click(function () {
           var query = "SELECT * FROM `view3_sumProdBranch`";
           loadData(query);
+          $(this).addClass("active");
         });
 
         $("#buttonCustProd").click(function () {
           var query = "SELECT * FROM `V_TotalPemasukanPerCustomerProd`";
           loadData(query);
+          $(this).addClass("active");
         });
 
         $("#buttonBranCustProd").click(function () {
           var query = "SELECT * FROM `V_TotalPemasukanPerbranch_cust_prod`";
           loadData(query);
+          $(this).addClass("active");
         });
 
-        // Load initial data (Button A)
-        $("#buttonBranch").trigger("click");
+
+        
+
+
+
       });
+      
     </script>
   </body>
 </html>
