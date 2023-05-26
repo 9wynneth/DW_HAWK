@@ -4,6 +4,23 @@ include 'connection.php';
 // Retrieve the query from the AJAX request
 $query = $_POST['query'];
 
+$heading = '';
+if (strpos($query, 'V_TotalPemasukanTiapBranch') !== false) {
+  $heading = 'Branch';
+} elseif (strpos($query, 'V_TotalPemasukanTiapCustomer') !== false) {
+  $heading = 'Customer';
+} elseif (strpos($query, 'V_TotalPemasukanPerProduk') !== false) {
+  $heading = 'Product';
+} elseif (strpos($query, 'view2_sumCustBranch') !== false) {
+  $heading = 'Branch-Customer';
+} elseif (strpos($query, 'view3_sumProdBranch') !== false) {
+  $heading = 'Branch-Product';
+} elseif (strpos($query, 'V_TotalPemasukanPerCustomerProd') !== false) {
+  $heading = 'Customer-Product';
+} elseif (strpos($query, 'V_TotalPemasukanPerbranch_cust_prod`') !== false) {
+  $heading = 'Branch-Customer-Product';
+}
+
 // Execute the query
 $result = $conn->query($query);
 
@@ -32,6 +49,7 @@ $conn->close();
 
 // Generate the HTML code for the table
 $html = '
+<h2>' . $heading . '</h2>
   <table id="example2" class="display dataTable no-footer" style="width: 100%" aria-describedby="example_info">
     <thead>
       <tr>';
